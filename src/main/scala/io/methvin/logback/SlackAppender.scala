@@ -37,14 +37,13 @@ private object SlackAppender {
   case class SlackPostMessage(
     channel: String,
     text: String,
-    color: Option[String] = None,
     username: Option[String] = None,
     icon_emoji: Option[String] = None,
-    mrkdwn: Boolean = false
+    mrkdwn: Boolean
   )
   object SlackPostMessage {
     import DefaultJsonProtocol._
-    implicit val format = jsonFormat6(SlackPostMessage.apply)
+    implicit val format = jsonFormat5(SlackPostMessage.apply)
   }
 
   val DefaultLayout = new LayoutBase[ILoggingEvent] {
@@ -71,6 +70,7 @@ class SlackAppender extends UnsynchronizedAppenderBase[ILoggingEvent] {
   private var username: Option[String] = None
   private var iconEmoji: Option[String] = None
   private var layout: Layout[ILoggingEvent] = DefaultLayout
+  private var useMarkdown: Boolean = true
   private var token: String = ""
 
   def getUri: String = this.uri
@@ -103,6 +103,12 @@ class SlackAppender extends UnsynchronizedAppenderBase[ILoggingEvent] {
     this.iconEmoji = Option(iconEmoji)
   }
 
+  def getUseMarkdown: Boolean = this.useMarkdown
+
+  def setUseMarkdown(useMarkdown: Boolean): Unit = {
+    this.useMarkdown = useMarkdown
+  }
+
   def getLayout: Layout[ILoggingEvent] = this.layout
 
   def setLayout(layout: Layout[ILoggingEvent]): Unit = {
@@ -119,7 +125,7 @@ class SlackAppender extends UnsynchronizedAppenderBase[ILoggingEvent] {
   }
 
   private def postToSlack(channel: String, event: ILoggingEvent): Unit = {
-    val payload = SlackPostMessage(channel, layout.doLayout(event), username, iconEmoji)
+    val payload = SlackPostMessage(channel, layout.doLayout(event), username, iconEmoji, useMarkdown)
 
     val responseFuture = Marshal(payload).to[RequestEntity].flatMap { entity =>
       Http().singleRequest(

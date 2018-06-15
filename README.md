@@ -33,19 +33,22 @@ To enable, add the appender to your `logback.xml`, providing at least a `token`:
 ```xml
 <configuration>
   <appender name="SLACK" class="io.methvin.logback.SlackAppender">
-    <!-- The slack token for the app. This must have at least the "chat.write.bot" permission. -->
+    <!-- The app's slack API token. This must have at least the "chat.write.bot" permission. -->
     <token>YOUR_SLACK_TOKEN</token>
 
-    <!-- If you set the channel option, ALL logs will go to this channel -->
+    <!-- If you set the channel option, ALL logs will go to this channel. -->
     <!-- <channel>#application-logs</channel> -->
 
     <!-- The emoji to use as the icon for this message (must start and end in a colon) -->
     <!-- <iconEmoji>:shrug:</iconEmoji> -->
 
-    <!-- The bot's username -->
+    <!-- The bot's username. -->
     <!-- <username>logger</username> -->
 
-    <!-- Formatting (you can use Slack formatting - URL links, code formatting, etc.) -->
+    <!-- Whether Slack should use markdown to process the log messages. Defaults to true. -->
+    <!-- <useMarkdown>false</useMarkdown> -->
+
+    <!-- Formatting -->
     <layout class="ch.qos.logback.classic.PatternLayout">
       <pattern>%-4relative [%thread] %-5level %class - %msg%n</pattern>
     </layout>
