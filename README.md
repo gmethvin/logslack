@@ -1,6 +1,10 @@
-# Logslack - Slack Logback appender
+# Logslack: Logback appender for Slack
 
-Logslack is a Logback appender that posts log messages to Slack and allows selectively directing log messages to Slack channels by passing a `Marker`. The library is written in Scala using an Akka HTTP client to make requests asynchronously to the Slack API.
+[![Travis CI](https://travis-ci.org/gmethvin/logslack.svg?branch=master)](https://travis-ci.org/gmethvin/logslack) [![Maven](https://img.shields.io/maven-central/v/io.methvin/logslack_2.12.svg)](https://mvnrepository.com/artifact/io.methvin/logslack)
+
+Logslack is a Logback appender that posts log messages to Slack. Since you generally don't want to send all logs to Slack, it allows selectively directing log messages to Slack channels by passing a `Marker`.
+
+The library is written in Scala, using an Akka HTTP client to make requests asynchronously to the Slack API.
 
 ## Dependency
 
@@ -10,7 +14,17 @@ In sbt:
 libraryDependencies += "io.methvin" %% "logslack" % logslackVersion
 ```
 
-Replace the `logslackVersion` with the latest version ([![Maven](https://img.shields.io/maven-central/v/io.methvin/logslack_2.12.svg)](https://mvnrepository.com/artifact/io.methvin/logslack)), or any older version you wish to use.
+In maven:
+
+```xml
+<dependency>
+    <groupId>io.methvin</groupId>
+    <artifactId>logslack_2.12</artifactId>
+    <version>${logslackVersion}</version>
+</dependency>
+```
+
+Replace the `logslackVersion` with the version ([![Maven](https://img.shields.io/maven-central/v/io.methvin/logslack_2.12.svg)](https://mvnrepository.com/artifact/io.methvin/logslack)).
 
 ## Configuration
 
@@ -19,17 +33,22 @@ To enable, add the appender to your `logback.xml`, providing at least a `token`:
 ```xml
 <configuration>
   <appender name="SLACK" class="io.methvin.logback.SlackAppender">
-    <!-- Your slack token (required). This must have at least the "chat.write.bot" permission. -->
+    <!-- The slack token for the app. This must have at least the "chat.write.bot" permission. -->
     <token>YOUR_SLACK_TOKEN</token>
 
     <!-- If you set the channel option, ALL logs will go to this channel -->
-    <!-- <channel>#general-logs</channel> -->
+    <!-- <channel>#application-logs</channel> -->
 
-    <!-- The emoji to use as the icon for this message  -->
-    <!-- <iconEmoji>logger</iconEmoji> -->
+    <!-- The emoji to use as the icon for this message (must start and end in a colon) -->
+    <!-- <iconEmoji>:shrug:</iconEmoji> -->
 
-    <!-- The bot's user name -->
+    <!-- The bot's username -->
     <!-- <username>logger</username> -->
+
+    <!-- Formatting (you can use Slack formatting - URL links, code formatting, etc.) -->
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%-4relative [%thread] %-5level %class - %msg%n</pattern>
+    </layout>
   </appender>
 
   <root level="ERROR">
@@ -60,4 +79,4 @@ logger.info(SlackMarkers.GeneralAlerts, "Something happened!")
 logger.info("Something happened!")(SlackMarkers.GeneralAlerts)
 ```
 
-To log all messages in some channel, set the `channel` option in the configuration, described above.
+To log all messages in some channel, set the `channel` option in the configuration, described in the configuration section above.
