@@ -48,13 +48,18 @@ To enable, add the appender to your `logback.xml`, providing at least a `token`:
     <!-- Whether Slack should use markdown to process the log messages. Defaults to true. -->
     <!-- <useMarkdown>false</useMarkdown> -->
 
+    <!-- Only log above a certain threshold to slack -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+       <level>WARN</level>
+    </filter>
+
     <!-- Formatting -->
     <layout class="ch.qos.logback.classic.PatternLayout">
       <pattern>%-4relative [%thread] %-5level %class - %msg%n</pattern>
     </layout>
   </appender>
 
-  <root level="ERROR">
+  <root level="INFO">
     <appender-ref ref="SLACK" />
   </root>
 </configuration>

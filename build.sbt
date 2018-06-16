@@ -13,8 +13,8 @@ developers in ThisBuild := List(
 scalaVersion in ThisBuild := "2.12.6"
 crossScalaVersions in ThisBuild := Seq("2.11.12", scalaVersion.value)
 
-val AkkaVersion = "2.5.12"
-val AkkaHttpVersion = "10.1.2"
+val AkkaVersion = "2.5.13"
+val AkkaHttpVersion = "10.1.3"
 val LogbackVersion = "1.2.3"
 val SprayJsonVersion = "1.3.3"
 
